@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple To Do — XMB Wave Theme</title>
+  <style>
+    :root{
+      --navy:#07142a;
+      --navy-2:#0b2a5a;
+      --accent:#7a3fff; /* darker purple accent */
+      --accent-2:#4d1a8a; /* deeper purple */
+      --bg-btn-1:#063043;
+      --bg-btn-2:#0b3b49;
+      --glass: rgba(255,255,255,0.06);
+      --card: rgba(255,255,255,0.04);
+      --muted: rgba(255,255,255,0.7);
+      --radius:16px;
+      --shadow: 0 8px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      color:#eaf6ff;background:linear-gradient(120deg,#000812 0%, #02121b 40%, #032a3a 70%, #021422 100%);
+      -webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;
+      padding:36px;overflow:hidden;
+    }
+    .app{
+      width:100%;max-width:760px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px;padding:28px;box-shadow:var(--shadow);backdrop-filter: blur(6px);
+      position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03);
+    }
+    /* Ensure children stack above decorative SVG wave */
+    .app > *{position:relative;z-index:1}
+
+    /* XMB wave header */
+    .header{
+      position:relative;padding:18px 20px 24px 20px;margin:-18px -18px 18px -18px;border-radius:18px 18px 0 0;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    }
+    .title{display:flex;align-items:center;gap:14px}
+    .logo{
+      width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent-2), var(--accent));
+      box-shadow:0 6px 20px rgba(60,10,100,0.45), inset 0 1px 0 rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;
+      color:#07142a;font-weight:700;font-size:20px
+    }
+    h1{font-size:20px;margin:0;color:#e6f7ff}
+    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+    /* Decorative SVG wave (PS3-style layered purple waves + bokeh) */
+    .bg-wave{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible;filter:contrast(1.02)}
+    .wave{width:100%;height:100%;display:block}
+
+    /* Input row */
+    .controls{display:flex;gap:12px;margin:18px 0 8px}
+    .input{
+      flex:1;display:flex;gap:8px;align-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:8px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);
+    }
+    .input input{flex:1;border:0;background:transparent;color:#eaf6ff;padding:10px 12px;font-size:15px;outline:none}
+    .btn{
+      appearance:none;border:0;padding:10px 16px;border-radius:999px;background:linear-gradient(180deg,var(--bg-btn-1), var(--bg-btn-2));
+      color:#fff;font-weight:600;cursor:pointer;box-shadow:0 8px 24px rgba(2,10,18,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+      transition:transform .14s ease, box-shadow .14s ease;display:inline-flex;align-items:center;gap:8px
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
+
+    /* Task list */
+    .list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .task{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.02));
+      box-shadow: 0 6px 18px rgba(2,6,23,0.45);border:1px solid rgba(255,255,255,0.02);
+      transition:box-shadow .12s ease, transform .08s ease;
+    }
+    .task:hover{box-shadow:0 10px 28px rgba(100,40,255,0.06);transform:translateY(-2px)}
+    .task .text{color:#e9f9ff;word-break:break-word}
+    .task .left{display:flex;align-items:center;gap:12px;flex:1}
+    .checkbox{
+      width:18px;height:18px;border-radius:6px;border:2px solid rgba(255,255,255,0.06);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+    .checkbox.checked{background:linear-gradient(135deg,var(--accent), #42f5ff);border-color:rgba(255,255,255,0.12);box-shadow:0 6px 18px rgba(120,60,240,0.16);color:#07142a}
+    .task.done .text{opacity:0.54;text-decoration:line-through;color:#bfeeff}
+    .task .meta{display:flex;gap:8px;align-items:center}
+    .del{background:linear-gradient(180deg,#ff6b6b,#ff3b3b);color:white;border-radius:10px;padding:8px;display:inline-flex;border:0;align-items:center;justify-content:center;cursor:pointer}
+    .empty{padding:36px;text-align:center;color:var(--muted)}
+
+    /* Footer */
+    .footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;color:var(--muted);font-size:13px}
+
+    @media (max-width:520px){
+      .app{padding:18px}
+      .logo{width:48px;height:48px;font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app" role="application" aria-labelledby="appTitle">
+    <!-- background wave sits behind all content to avoid blocking inputs -->
+    <div class="bg-wave" aria-hidden="true">
+      <svg class="wave" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bgGrad" x1="0" x2="1">
+              <stop offset="0%" stop-color="#00070b" />
+              <stop offset="40%" stop-color="#031923" />
+              <stop offset="70%" stop-color="#043444" />
+              <stop offset="100%" stop-color="#02121a" />
+            </linearGradient>
+            <linearGradient id="smoke" x1="0" x2="1">
+              <stop offset="0%" stop-color="#0b2230" />
+              <stop offset="50%" stop-color="#083044" />
+              <stop offset="100%" stop-color="#183d52" />
+            </linearGradient>
+            <filter id="softBlur" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="20" result="b"/>
+              <feBlend in="SourceGraphic" in2="b" mode="screen"/>
+            </filter>
+            <filter id="grain">
+              <feTurbulence baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="t"/>
+              <feColorMatrix type="saturate" values="0"/>
+              <feBlend in="SourceGraphic" in2="t" mode="overlay"/>
+              <feComponentTransfer>
+                <feFuncA type="table" tableValues="0 0.06"/>
+              </feComponentTransfer>
+            </filter>
+
+            <radialGradient id="rightGlow" cx="0.9" cy="0.15" r="0.45">
+              <stop offset="0%" stop-color="#6c35ff" stop-opacity="0.28" />
+              <stop offset="60%" stop-color="#6c35ff" stop-opacity="0.08" />
+              <stop offset="100%" stop-color="#6c35ff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+
+          <!-- base full background gradient -->
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#bgGrad)" />
+
+          <!-- full-width, more pronounced smoky ribbons across the screen -->
+          <g transform="translate(-400,240)" filter="url(#softBlur)" opacity="0.98">
+            <path d="M-400 260 C120 180 480 120 920 160 C1360 200 1680 140 2300 180 L2300 320 L-400 320 Z" fill="url(#smoke)" opacity="0.96"/>
+            <path d="M-400 240 C120 160 480 100 920 140 C1360 180 1680 120 2300 160 L2300 260 L-400 260 Z" fill="#dbeaff" opacity="0.08"/>
+            <path d="M-400 250 C120 170 480 110 920 150 C1360 190 1680 130 2300 170 L2300 290 L-400 290 Z" fill="#ffffff" opacity="0.06"/>
+          </g>
+
+          <!-- animated shimmer line to increase noticeability -->
+          <g opacity="0.65" filter="url(#softBlur)">
+            <path id="shimmer" d="M-400 270 C120 190 480 130 920 170 C1360 210 1680 150 2300 190" stroke="#f6fbff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.95">
+              <animate attributeName="stroke-opacity" values="0.0;0.9;0.0" dur="3.8s" repeatCount="indefinite"/>
+              <animateTransform attributeName="transform" type="translate" values="0 0; 60 0; 0 0" dur="6s" repeatCount="indefinite"/>
+            </path>
+          </g>
+
+          <!-- stronger right-side glow to accent the wave -->
+          <circle cx="1440" cy="120" r="520" fill="url(#rightGlow)" opacity="0.58" filter="url(#softBlur)" />
+
+          <!-- subtle vignette to focus center-right -->
+          <rect x="0" y="0" width="100%" height="100%" fill="black" opacity="0.14"/>
+
+          <!-- grain overlay (reduced) -->
+          <rect x="0" y="0" width="100%" height="100%" fill="#ffffff" opacity="0.008" filter="url(#grain)" />
+      </svg>
+    </div>
+
+    <header class="header">
+      <div class="title">
+        <div class="logo">XMB</div>
+        <div>
+          <h1 id="appTitle">Simple To Do — XMB Wave</h1>
+          <p class="lead">Rounded buttons • navy gradient • saves to your browser</p>
+        </div>
+      </div>
+
+      
+    </header>
+
+    <section>
+      <div class="controls">
+        <div class="input" role="search">
+          <input id="taskInput" placeholder="Add a task, then press Enter or Add" aria-label="Task description" />
+        </div>
+        <button id="addBtn" class="btn" aria-label="Add task">Add</button>
+      </div>
+
+      <div id="list" class="list" aria-live="polite"></div>
+
+      <div class="footer">
+        <div id="count">0 tasks</div>
+        <div style="display:flex;gap:8px">
+          <button id="clearCompleted" class="btn ghost">Clear Completed</button>
+          <button id="clearAll" class="btn ghost">Clear All</button>
+          <button id="export" class="btn ghost">Export</button>
+          <button id="import" class="btn ghost">Import</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const KEY = 'todo.tasks';
+      const clearCompletedBtn = document.getElementById('clearCompleted');
+      const clearAllBtn = document.getElementById('clearAll');
+      const input = document.getElementById('taskInput');
+      const addBtn = document.getElementById('addBtn');
+      const listEl = document.getElementById('list');
+      const countEl = document.getElementById('count');
+      const exportBtn = document.getElementById('export');
+      const importBtn = document.getElementById('import');
+
+      let tasks = [];
+
+      function load(){
+        try{
+          const raw = localStorage.getItem(KEY);
+          tasks = raw ? JSON.parse(raw) : [];
+          // normalize older items
+          tasks = tasks.map(t => ({ id: t.id || uid(), text: t.text || '', created: t.created || Date.now(), completed: !!t.completed }));
+        }catch(e){ tasks = []; }
+      }
+      function save(){
+        localStorage.setItem(KEY, JSON.stringify(tasks));
+      }
+      function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+
+      function render(){
+        listEl.innerHTML = '';
+        if(!tasks.length){
+          const empty = document.createElement('div');empty.className='empty';empty.innerHTML='No tasks yet — add something you want to remember.';listEl.appendChild(empty);
+        } else {
+          tasks.forEach(t=>{
+            const el = document.createElement('div');el.className='task'+(t.completed? ' done':'');
+            const left = document.createElement('div');left.className='left';
+            const checkbox = document.createElement('button');checkbox.className='checkbox'+(t.completed? ' checked':'');checkbox.setAttribute('aria-label','Toggle completed');checkbox.innerHTML = t.completed? '✓':'';
+            checkbox.addEventListener('click',()=>{ toggle(t.id); });
+            const text = document.createElement('div');text.className='text';text.textContent = t.text; text.title = 'Double-click to edit';
+            text.addEventListener('dblclick',()=>{ edit(t.id); });
+            left.appendChild(checkbox);left.appendChild(text);
+            const meta = document.createElement('div');meta.className='meta';
+            const del = document.createElement('button');del.className='del';del.setAttribute('aria-label','Delete task');del.innerHTML='✕';
+            del.addEventListener('click',()=>{ remove(t.id); });
+            meta.appendChild(del);
+            el.appendChild(left);el.appendChild(meta);listEl.appendChild(el);
+          });
+        }
+        const remaining = tasks.filter(t=>!t.completed).length;
+        countEl.textContent = tasks.length + (tasks.length===1?' task':' tasks') + ' • ' + remaining + ' remaining';
+      }
+
+      function add(text){
+        if(!text||!text.trim()) return;
+        tasks.unshift({id:uid(),text:text.trim(),created:Date.now()});
+        save();render();
+      }
+      function remove(id){
+        tasks = tasks.filter(t=>t.id!==id);save();render();
+      }
+
+      function toggle(id){
+        tasks = tasks.map(t=> t.id===id? {...t,completed:!t.completed} : t ); save(); render();
+      }
+
+      function edit(id){
+        const t = tasks.find(x=>x.id===id); if(!t) return;
+        const val = prompt('Edit task', t.text); if(val==null) return; const newText = val.trim(); if(!newText) return; t.text = newText; save(); render();
+      }
+
+      function clearCompleted(){
+        if(!tasks.some(t=>t.completed)) return; tasks = tasks.filter(t=>!t.completed); save(); render();
+      }
+
+      function clearAll(){
+        if(!confirm('Clear all tasks? This cannot be undone.')) return; tasks = []; save(); render();
+      }
+
+      addBtn.addEventListener('click',()=>{ add(input.value); input.value=''; input.focus(); });
+      input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ add(input.value); input.value=''; } });
+
+      exportBtn.addEventListener('click',()=>{
+        const data = JSON.stringify(tasks, null, 2);
+        const blob = new Blob([data],{type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');a.href=url;a.download='todo-export.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+      });
+      importBtn.addEventListener('click',()=>{
+        const inp = document.createElement('input');inp.type='file';inp.accept='application/json';
+        inp.onchange = ()=>{
+          const f = inp.files[0]; if(!f) return; const reader = new FileReader();
+          reader.onload = ()=>{
+            try{ const parsed = JSON.parse(reader.result); if(Array.isArray(parsed)){ tasks = parsed; save(); render(); } else alert('Invalid file'); }catch(e){ alert('Could not parse JSON'); }
+          };
+          reader.readAsText(f);
+        };
+        inp.click();
+      });
+
+      clearCompletedBtn.addEventListener('click', clearCompleted);
+      clearAllBtn.addEventListener('click', clearAll);
+
+      // keyboard shortcut: Ctrl+K to focus input
+      document.addEventListener('keydown', e=>{ if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); input.focus(); input.select(); } });
+
+      // init
+      load();render();
+    })();
+  </script>
+</body>
+</html>
